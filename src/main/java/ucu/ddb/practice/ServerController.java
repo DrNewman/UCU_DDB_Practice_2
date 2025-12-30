@@ -4,20 +4,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 @RestController
 public class ServerController {
-    private int p1 = 0;
+
+    private volatile AtomicInteger inMemmoryCounter = new AtomicInteger(0);
     private int p2 = 0;
 
     @PostMapping("/inc_p1")
     public String incP1() {
-        p1++;
-        return "P1 incremented";
+        return String.valueOf(inMemmoryCounter.incrementAndGet());
     }
 
     @GetMapping("/count_p1")
     public int countP1() {
-        return p1;
+        return inMemmoryCounter.get();
     }
 
     @PostMapping("/inc_p2")
